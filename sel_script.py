@@ -63,8 +63,14 @@ def get_report(driver, url, dir_name):
 
         find_button = driver.find_element(By.XPATH, XPATH.get('find_button'))
         find_button.click()
+
+        # WebDriverWait(driver, 60).until(
+        #     ec.presence_of_element_located((By.XPATH, XPATH.get('pagination')))
+        # )
+        # time.sleep(0.5)
+
         WebDriverWait(driver, 60).until(
-            ec.presence_of_element_located((By.XPATH, XPATH.get('pagination')))
+            ec.invisibility_of_element_located((By.XPATH, XPATH.get('progress_bar')))
         )
         time.sleep(0.5)
 
@@ -88,7 +94,7 @@ def run():
     for i in FOLDER_FILE_NAMES.items():
         new_download_dir = os.path.join(HOME_DIR + '\\Desktop\\', i[0])
         old_filename = new_download_dir + '\\download.xls'
-        new_filename = new_download_dir + f'\\{i[1]}_{datetime.now().strftime("%m.%d.%Y %H.%M.%S")}.xls'
+        new_filename = new_download_dir + f'\\{i[1]}_{datetime.now().strftime("%m.%d.%Y %H.%M.%S")}.xlsx'
 
         try:
             os.mkdir(new_download_dir)
