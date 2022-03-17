@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
 
-from config import CHROME_DRIVER_PATH, AUTH_DATA, XPATH, USER_AGENT, URL, HOME_DIR, FOLDER_FILE_NAMES
+from config import CHROME_DRIVER_PATH, AUTH_DATA, XPATH, USER_AGENT, URL, HOME_DIR, FOLDER_FILE_NAMES, SEARCH_PARAMS
 
 
 def initialization(folder_name):
@@ -23,7 +23,7 @@ def initialization(folder_name):
     return driver
 
 
-def get_report(driver, url):
+def get_report(driver, url, dir_name):
     try:
         driver.get(url)
 
@@ -51,14 +51,19 @@ def get_report(driver, url):
         driver.find_element(By.XPATH, XPATH.get('reports')).click()
         driver.find_element(By.XPATH, XPATH.get('report on the execution of the plan')).click()
 
-        change_year = driver.find_element(By.XPATH, XPATH.get('year'))
+        change_year = driver.find_element(By.XPATH, XPATH.get('change_year'))
         change_year.clear()
-        change_year.send_keys('2021')
+        change_year.send_keys(SEARCH_PARAMS.get('year'))
+        time.sleep(0.5)
+
+        if dir_name == 'ДПЗ':
+            selector = driver.find_element(By.XPATH, SEARCH_PARAMS.get('plane_kind').get('long-time'))
+            selector.click()
         time.sleep(0.5)
 
         find_button = driver.find_element(By.XPATH, XPATH.get('find_button'))
         find_button.click()
-        WebDriverWait(driver, 100).until(
+        WebDriverWait(driver, 60).until(
             ec.presence_of_element_located((By.XPATH, XPATH.get('pagination')))
         )
         time.sleep(0.5)
@@ -68,7 +73,7 @@ def get_report(driver, url):
         download_button.click()
         time.sleep(0.5)
 
-        WebDriverWait(driver, 100).until(
+        WebDriverWait(driver, 60).until(
             ec.element_to_be_clickable((By.XPATH, XPATH.get('download_button')))
         )
         time.sleep(5)
@@ -90,8 +95,12 @@ def run():
         except FileExistsError:
             ...
 
-        get_report(driver=initialization(i[0]), url=URL)
-        os.rename(old_filename, new_filename)
+        get_report(driver=initialization(i[0]), url=URL, dir_name=i[0])
+
+        try:
+            os.rename(old_filename, new_filename)
+        except FileNotFoundError:
+            print('Не удалось найти отчёт по заданным параметрам')
 
 
 if __name__ == '__main__':
