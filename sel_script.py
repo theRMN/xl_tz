@@ -90,7 +90,7 @@ def get_report(driver, url, dir_name):
         driver.quit()
 
 
-def run():
+def run_sel():
     for i in FOLDER_FILE_NAMES.items():
         new_download_dir = os.path.join(HOME_DIR + '\\Desktop\\', i[0])
         old_filename = new_download_dir + '\\download.xls'
@@ -110,4 +110,4 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    run_sel()

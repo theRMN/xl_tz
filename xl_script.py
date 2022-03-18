@@ -8,10 +8,16 @@ from config import HOME_DIR, FOLDER_FILE_NAMES
 def find_files():
     file_list = []
 
-    for i in FOLDER_FILE_NAMES.keys():
-        file_dir = os.path.join(HOME_DIR + '\\Desktop\\', i)
-        file_ext = r'.xlsx'
-        file_list += [f'{file_dir}\\{x}' for x in os.listdir(file_dir) if x.endswith(file_ext)]
+    # for all reports
+    # for i in FOLDER_FILE_NAMES.keys():
+    #     file_dir = os.path.join(HOME_DIR + '\\Desktop\\', i)
+    #     file_ext = r'.xlsx'
+    #     file_list += [f'{file_dir}\\{x}' for x in os.listdir(file_dir) if x.endswith(file_ext)]
+
+    # for reports from "ГПХ" folder
+    file_dir = os.path.join(HOME_DIR + '\\Desktop\\', 'ГПХ')
+    file_ext = r'.xlsx'
+    file_list += [f'{file_dir}\\{x}' for x in os.listdir(file_dir) if x.endswith(file_ext)]
 
     return file_list
 
@@ -35,7 +41,6 @@ def modification_xl(mapping, file_list):
     for filename in file_list:
         book = openpyxl.load_workbook(filename=filename)
         sheet = book.worksheets[0]
-
         sheet.insert_cols(25)
         sheet['Y2'] = 'Статус для свода'
 
@@ -50,5 +55,9 @@ def modification_xl(mapping, file_list):
         book.save(filename)
 
 
-if __name__ == '__main__':
+def run_xl():
     modification_xl(mapping=get_mapping(), file_list=find_files())
+
+
+if __name__ == '__main__':
+    run_xl()
